@@ -7,8 +7,8 @@ import java.util.Random;
 public class IntegerSorts extends Sorts {
 
     private static final Random rand = new Random();
-    public static final int RAND_NUMBER_MAXIMUM = Integer.MAX_VALUE;  // random round
-    public static final int RAND_NUMBER_MINIMUM = 100;  // random round
+    public static final int RAND_NUMBER_MAXIMUM = Integer.MAX_VALUE;  // random bounded
+    public static final int RAND_NUMBER_MINIMUM = 100;  // random bounded
     public static final int VALID_SORT_ORDER_LENGTH = 8;   // arr items number test sorted used.
     public static final int VALID_SORT_WASTE_LENGTH = 20000; // arr items number test waste used.
 
@@ -32,7 +32,7 @@ public class IntegerSorts extends Sorts {
         var sorter = new IntegerSorts();
         sorter.validSortMethod("selectSort", sorter::selectSort);
         sorter.validSortMethod("insertSort", sorter::insertSort);
-        sorter.validSortMethod("shellSort", sorter::shellSort);
+        sorter.validSortMethod("shellSort", sorter::shellSort, 2 << 20);
     }
 
     /**
@@ -41,6 +41,10 @@ public class IntegerSorts extends Sorts {
      * @param sorting sort functional interface
      */
     private void validSortMethod(String sortName, Sorting sorting) {
+        validSortMethod(sortName, sorting, VALID_SORT_WASTE_LENGTH);
+    }
+
+    private void validSortMethod(String sortName, Sorting sorting, int wasteArrLength) {
         System.out.println("==========================================================");
         System.out.printf("[%s] valid output: \n", sortName);
         var arr = genRandSort(VALID_SORT_ORDER_LENGTH, RAND_NUMBER_MINIMUM);
@@ -48,11 +52,11 @@ public class IntegerSorts extends Sorts {
         sorting.sort(arr);
         System.out.printf("     after sort:         %s\n", Arrays.toString(arr));
         System.out.printf("     sorted status:      %s\n", isSorted(arr));
-        arr = genRandSort(VALID_SORT_WASTE_LENGTH);
+        arr = genRandSort(wasteArrLength);
         var begin = System.currentTimeMillis();
         sorting.sort(arr);
         var end = System.currentTimeMillis();
-        System.out.printf("     sort %d items wasted time:    %.3fs\n", VALID_SORT_WASTE_LENGTH, (end - begin) / 1000.0);
+        System.out.printf("     sort %.1fw items wasted time:    %.3fs\n", wasteArrLength / 10000.0, (end - begin) / 1000.0);
         System.out.println("==========================================================");
     }
 

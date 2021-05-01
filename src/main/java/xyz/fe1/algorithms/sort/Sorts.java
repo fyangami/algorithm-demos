@@ -28,6 +28,18 @@ public abstract class Sorts {
         }
     }
 
+    protected void shellSort(Object[] arr, Comparator<Object> cmp) {
+        int step = 0;
+        while (step < arr.length / 3) step = step * 3 + 1; // 计算一个起始步长
+        while (step > 0) {
+            int i, j;
+            for (i = step; i < arr.length; ++i)
+                for (j = i; j >= step && cmp.compare(arr[j], arr[j - step]) < 0; j -= step)
+                    swap(arr, j, j - step);
+            step /= 3;
+        }
+    }
+
     /**
      * insert source to target in arr.
      *      example: arr = [1, 2, 3]  target: 0, source: 2

@@ -10,7 +10,7 @@ public class IntegerSorts extends Sorts {
     public static final int RAND_NUMBER_MAXIMUM = Integer.MAX_VALUE;  // random round
     public static final int RAND_NUMBER_MINIMUM = 100;  // random round
     public static final int VALID_SORT_ORDER_LENGTH = 8;   // arr items number test sorted used.
-    public static final int VALID_SORT_WASTE_LENGTH = 22222; // arr items number test waste used.
+    public static final int VALID_SORT_WASTE_LENGTH = 20000; // arr items number test waste used.
 
     public void selectSort(Integer[] arr) {
         super.selectSort(arr, Comparator.comparingInt(a -> (int) a));
@@ -18,6 +18,10 @@ public class IntegerSorts extends Sorts {
 
     public void insertSort(Integer[] arr) {
         super.insertSort(arr, Comparator.comparingInt(a -> (int) a));
+    }
+
+    public void shellSort(Integer[] arr) {
+        super.shellSort(arr, Comparator.comparingInt(a -> (int) a));
     }
 
     public boolean isSorted(Integer[] arr) {
@@ -28,6 +32,7 @@ public class IntegerSorts extends Sorts {
         var sorter = new IntegerSorts();
         sorter.validSortMethod("selectSort", sorter::selectSort);
         sorter.validSortMethod("insertSort", sorter::insertSort);
+        sorter.validSortMethod("shellSort", sorter::shellSort);
     }
 
     /**

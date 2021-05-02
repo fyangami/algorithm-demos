@@ -1,5 +1,6 @@
 package xyz.fe1.algorithms.sort;
 
+import java.util.Arrays;
 import java.util.Comparator;
 
 public abstract class Sorts {
@@ -38,6 +39,40 @@ public abstract class Sorts {
                     swap(arr, j, j - step);
             step /= 3;
         }
+    }
+
+    protected void margeSort(Object[] arr, Comparator<Object> cmp) {
+        Object[] marge = new Object[arr.length];
+        class Closure {
+            void recursion(int begin, int end) {
+                if (begin >= end) return;
+                var mid = (begin + end) / 2;
+                recursion(begin, mid);
+                recursion(mid + 1, end);
+                marge(begin, end, mid);
+            }
+
+            void marge(int begin, int end, int mid) {
+                copyArray(arr, marge, begin, end);
+                int i = begin, j = mid + 1, cursor = begin;
+                while (i <= mid || j <= end) {
+                    if (i <= mid && j <= end) arr[cursor++] = cmp.compare(marge[i], marge[j]) < 0 ? marge[i++] : marge[j++];
+                    else if (i <= mid) arr[cursor++] = marge[i++];
+                    else arr[cursor++] = marge[j++];
+                }
+            }
+        }
+        new Closure().recursion(0, arr.length - 1);
+    }
+
+    public static void copyArray(Object[] source, Object[] target) {
+        copyArray(source, target, 0, source.length);
+    }
+
+    private static void copyArray(Object[] source, Object[] target, int begin, int end) {
+        if (begin < 0 || end < 0 || begin > end || end >= source.length || end >= target.length)
+            throw new IllegalArgumentException();
+        while (begin <= end) target[begin] = source[begin++];
     }
 
     /**

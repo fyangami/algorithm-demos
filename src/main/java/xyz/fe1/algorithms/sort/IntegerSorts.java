@@ -24,6 +24,10 @@ public class IntegerSorts extends Sorts {
         super.shellSort(arr, Comparator.comparingInt(a -> (int) a));
     }
 
+    public void margeSort(Integer[] arr) {
+        super.margeSort(arr, Comparator.comparingInt(a -> (int) a));
+    }
+
     public boolean isSorted(Integer[] arr) {
         return super.isSorted(arr, Comparator.comparingInt(a -> (int) a));
     }
@@ -32,7 +36,8 @@ public class IntegerSorts extends Sorts {
         var sorter = new IntegerSorts();
         sorter.validSortMethod("selectSort", sorter::selectSort);
         sorter.validSortMethod("insertSort", sorter::insertSort);
-        sorter.validSortMethod("shellSort", sorter::shellSort, 2 << 20);
+        sorter.validSortMethod("shellSort", sorter::shellSort, 2 << 16);
+        sorter.validSortMethod("margeSort", sorter::margeSort, 2 << 16);
     }
 
     /**
@@ -41,10 +46,14 @@ public class IntegerSorts extends Sorts {
      * @param sorting sort functional interface
      */
     private void validSortMethod(String sortName, Sorting sorting) {
-        validSortMethod(sortName, sorting, VALID_SORT_WASTE_LENGTH);
+        validSortMethod(sortName, sorting, VALID_SORT_WASTE_LENGTH, true);
     }
 
     private void validSortMethod(String sortName, Sorting sorting, int wasteArrLength) {
+        validSortMethod(sortName, sorting, wasteArrLength, true);
+    }
+
+    private void validSortMethod(String sortName, Sorting sorting, int wasteArrLength, boolean wasteTest) {
         System.out.println("==========================================================");
         System.out.printf("[%s] valid output: \n", sortName);
         var arr = genRandSort(VALID_SORT_ORDER_LENGTH, RAND_NUMBER_MINIMUM);
@@ -52,6 +61,7 @@ public class IntegerSorts extends Sorts {
         sorting.sort(arr);
         System.out.printf("     after sort:         %s\n", Arrays.toString(arr));
         System.out.printf("     sorted status:      %s\n", isSorted(arr));
+        if (!wasteTest) return;
         arr = genRandSort(wasteArrLength);
         var begin = System.currentTimeMillis();
         sorting.sort(arr);

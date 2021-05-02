@@ -12,6 +12,10 @@ public class IntegerSorts extends Sorts {
     public static final int VALID_SORT_ORDER_LENGTH = 8;   // arr items number test sorted used.
     public static final int VALID_SORT_WASTE_LENGTH = 20000; // arr items number test waste used.
 
+    public void bubbleSort(Integer[] arr) {
+        super.bubbleSort(arr, Comparator.comparingInt(a -> (int) a));
+    }
+
     public void selectSort(Integer[] arr) {
         super.selectSort(arr, Comparator.comparingInt(a -> (int) a));
     }
@@ -28,50 +32,51 @@ public class IntegerSorts extends Sorts {
         super.margeSort(arr, Comparator.comparingInt(a -> (int) a));
     }
 
+    public void quickSort(Integer[] arr) {
+        super.quickSort(arr, Comparator.comparingInt(a -> (int) a));
+    }
+
     public boolean isSorted(Integer[] arr) {
         return super.isSorted(arr, Comparator.comparingInt(a -> (int) a));
     }
 
     public static void main(String[] args) {
         var sorter = new IntegerSorts();
+        sorter.validSortMethod("bubbleSort", sorter::bubbleSort);
         sorter.validSortMethod("selectSort", sorter::selectSort);
         sorter.validSortMethod("insertSort", sorter::insertSort);
         sorter.validSortMethod("shellSort", sorter::shellSort, 2 << 16);
         sorter.validSortMethod("margeSort", sorter::margeSort, 2 << 16);
+        sorter.validSortMethod("quickSort", sorter::quickSort, 2 << 20);
     }
 
     /**
      * testing sort method
      * @param sortName sort name
-     * @param sorting sort functional interface
+     * @param sort sort functional interface
      */
-    private void validSortMethod(String sortName, Sorting sorting) {
-        validSortMethod(sortName, sorting, VALID_SORT_WASTE_LENGTH, true);
+    private void validSortMethod(String sortName, Sort sort) {
+        validSortMethod(sortName, sort, VALID_SORT_WASTE_LENGTH);
     }
 
-    private void validSortMethod(String sortName, Sorting sorting, int wasteArrLength) {
-        validSortMethod(sortName, sorting, wasteArrLength, true);
-    }
-
-    private void validSortMethod(String sortName, Sorting sorting, int wasteArrLength, boolean wasteTest) {
+    private void validSortMethod(String sortName, Sort sort, int wasteArrLength) {
         System.out.println("==========================================================");
         System.out.printf("[%s] valid output: \n", sortName);
         var arr = genRandSort(VALID_SORT_ORDER_LENGTH, RAND_NUMBER_MINIMUM);
         System.out.printf("     before sort:        %s\n", Arrays.toString(arr));
-        sorting.sort(arr);
+        sort.sort(arr);
         System.out.printf("     after sort:         %s\n", Arrays.toString(arr));
         System.out.printf("     sorted status:      %s\n", isSorted(arr));
-        if (!wasteTest) return;
         arr = genRandSort(wasteArrLength);
         var begin = System.currentTimeMillis();
-        sorting.sort(arr);
+        sort.sort(arr);
         var end = System.currentTimeMillis();
         System.out.printf("     sort %.1fw items wasted time:    %.3fs\n", wasteArrLength / 10000.0, (end - begin) / 1000.0);
         System.out.println("==========================================================");
     }
 
     @FunctionalInterface
-    private interface Sorting {
+    private interface Sort {
         void sort(Integer[] arr);
     }
 

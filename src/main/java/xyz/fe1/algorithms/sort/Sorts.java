@@ -1,9 +1,15 @@
 package xyz.fe1.algorithms.sort;
 
-import java.util.Arrays;
 import java.util.Comparator;
 
 public abstract class Sorts {
+
+    protected void bubbleSort(Object[] arr, Comparator<Object> cmp) {
+        int i, j;
+        for (i = 0; i < arr.length; ++i)
+            for (j = i + 1; j < arr.length; ++j)
+                if (cmp.compare(arr[i], arr[j]) > 0) swap(arr, i, j);
+    }
 
     protected void selectSort(Object[] arr, Comparator<Object> cmp) {
         int selected;
@@ -29,6 +35,11 @@ public abstract class Sorts {
         }
     }
 
+    /**
+     * 希尔排序，插入排序的加强版，不是很理解 (:
+     * @param arr 待排数组
+     * @param cmp 比较函数
+     */
     protected void shellSort(Object[] arr, Comparator<Object> cmp) {
         int step = 0;
         while (step < arr.length / 3) step = step * 3 + 1; // 计算一个起始步长
@@ -41,8 +52,14 @@ public abstract class Sorts {
         }
     }
 
+    /**
+     * 归并排序:
+     *      分治思想，将数组切分为两个子数组，归并两个子数组，核心: marge函数
+     * @param arr 待排数组
+     * @param cmp 比较函数
+     */
     protected void margeSort(Object[] arr, Comparator<Object> cmp) {
-        Object[] marge = new Object[arr.length];
+        Object[] marge = new Object[arr.length];  // 申请一块临时空间
         class Closure {
             void recursion(int begin, int end) {
                 if (begin >= end) return;
@@ -52,6 +69,12 @@ public abstract class Sorts {
                 marge(begin, end, mid);
             }
 
+            /**
+             * 归并过程，按照comparator结果，将两个子数组分别追加到arr中，形成有序列
+             * @param begin 起始索引
+             * @param end 结束索引
+             * @param mid 中间值(分割两个子数组)
+             */
             void marge(int begin, int end, int mid) {
                 copyArray(arr, marge, begin, end);
                 int i = begin, j = mid + 1, cursor = begin;
@@ -60,6 +83,45 @@ public abstract class Sorts {
                     else if (i <= mid) arr[cursor++] = marge[i++];
                     else arr[cursor++] = marge[j++];
                 }
+            }
+        }
+        new Closure().recursion(0, arr.length - 1);
+    }
+
+    /**
+     * 快排(效率取决于中间元素的选择)，分治思想 核心函数: separation
+     *      - 相对于归并排序，归并排序先分再治，快排先治(未彻底治理)再分(最细粒度即可完成治理)
+     *      - 核心思想，在数组中选取一个元素E，根据这个元素进行分类，使当前数组呈现: [...] < E < [...] 然后递归处理子序列
+     *      - 分割后的数组只相对于选中的元素E有序！
+     * @param arr 待排数组
+     * @param cmp 比较函数
+     */
+    protected void quickSort(Object[] arr, Comparator<Object> cmp) {
+        class Closure {
+            void recursion(int begin, int end) {
+                if (begin >= end) return;
+                var sep = separation(begin, end);  // 分割数组，返回分割后元素E的下标
+                recursion(begin, sep - 1);
+                recursion(sep + 1, end);
+            }
+
+            /**
+             * 对指定序列进行分类
+             * @param begin 起始下标
+             * @param end 结束下标
+             * @return 中间元素E的下标
+             */
+            int separation(int begin, int end) {
+                Object selected = arr[begin];  // 选择数组的第一个元素为中间元素
+                int left = begin + 1, right = end;
+                for (;;) {
+                    while (cmp.compare(selected, arr[left]) > 0) if (left++ >= end) break;
+                    while (cmp.compare(selected, arr[right]) < 0) if (right-- <= begin) break;
+                    if (left >= right) break;
+                    swap(arr, left, right);
+                }
+                swap(arr, begin, right);  // 将选中的元素放在中间位置
+                return right;
             }
         }
         new Closure().recursion(0, arr.length - 1);
@@ -89,11 +151,8 @@ public abstract class Sorts {
             throw new IndexOutOfBoundsException("target or source index out of bound! target: "
                     + target + "  source: " + source);
         var tmp = arr[source];
-        if (target < source) {
-            while (source != target) arr[--source + 1] = arr[source];
-        } else {
-            while (source != target) arr[++source - 1] = arr[source];
-        }
+        if (target < source) while (source != target) arr[--source + 1] = arr[source];
+        else while (source != target) arr[++source - 1] = arr[source];
         arr[target] = tmp;
     }
 
@@ -103,6 +162,12 @@ public abstract class Sorts {
         arr[j] = tmp;
     }
 
+    /**
+     * 验证一个数组是否有序，需提供比较函数
+     * @param arr 待验证数组
+     * @param cmp 比较函数
+     * @return 是否有序
+     */
     protected boolean isSorted(Object[] arr, Comparator<Object> cmp) {
         var previousDifference = 0;
         for (var i = 0; i < arr.length - 1; ++i) {

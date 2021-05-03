@@ -76,7 +76,7 @@ public class IntegerSorts extends Sorts {
         var begin = System.currentTimeMillis();
         sort.sort(arr);
         var end = System.currentTimeMillis();
-        System.out.printf("     sort %.1fw items wasted time:    %.3fs\n", wasteArrLength / 10000.0, (end - begin) / 1000.0);
+        System.out.printf("     sorted %.2fw items waste:    %.3fs\n", wasteArrLength / 10000.0, (end - begin) / 1000.0);
         System.out.println("==========================================================");
     }
 

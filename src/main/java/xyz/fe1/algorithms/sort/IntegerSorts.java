@@ -36,6 +36,10 @@ public class IntegerSorts extends Sorts {
         super.quickSort(arr, Comparator.comparingInt(a -> (int) a));
     }
 
+    public void heapSort(Integer[] arr) {
+        super.heapSort(arr, Comparator.comparingInt(a -> (int) a));
+    }
+
     public boolean isSorted(Integer[] arr) {
         return super.isSorted(arr, Comparator.comparingInt(a -> (int) a));
     }
@@ -48,6 +52,7 @@ public class IntegerSorts extends Sorts {
         sorter.validSortMethod("shellSort", sorter::shellSort, 2 << 16);
         sorter.validSortMethod("margeSort", sorter::margeSort, 2 << 16);
         sorter.validSortMethod("quickSort", sorter::quickSort, 2 << 20);
+        sorter.validSortMethod("heapSort", sorter::heapSort, 2 << 20);
     }
 
     /**

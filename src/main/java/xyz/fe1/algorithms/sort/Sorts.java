@@ -127,6 +127,82 @@ public abstract class Sorts {
         new Closure().recursion(0, arr.length - 1);
     }
 
+    protected void heapSort(Object[] arr, Comparator<Object> cmp) {
+        class Heap {
+
+            /**
+             * 排序方法：
+             *      1. 从数组头部开始构造二叉堆                  96 -> 88 59
+             *      2. 从数组尾部开始构造有序列                  88 -> 79 2  59 -> 24 30  79 -> 70
+             *      notice:
+             *          由于一直在同数组进行操作，需注意下标越界问题
+             *          构造二叉堆的过程这里使用了将末尾元素上浮的方法，更好的方法是对数组的前二分之一元素进行下沉操作，
+             *              这里就不做实现了
+             */
+            void sort() {
+                int i = 1, j = arr.length - 1;
+                while (i <= j) swim(0, i++);  // 堆构造
+                while (j > 0) {  // 排序
+                    swap(arr, 0, j--);
+                    sink(0, j);
+                }
+            }
+
+            /**
+             * 二叉堆的下沉操作
+             * @param begin 堆的起始坐标
+             * @param end 堆的结束下标
+             */
+            void sink(int begin, int end) {
+                var target = begin;  // 选择第一个元素为下沉元素
+                for (;;) {
+                    var swap = leftChild(target);
+                    if (swap > end) break;
+                    if ((swap + 1 <= end) && cmp.compare(arr[swap], arr[swap + 1]) < 0) swap++;
+                    if (cmp.compare(arr[target], arr[swap]) > 0) break;
+                    swap(arr, swap, target);
+                    target = swap;
+                }
+            }
+
+            /**
+             * 二叉堆的上浮操作
+             * @param begin 堆的起始下标
+             * @param end 堆的结束下标
+             */
+            void swim(int begin, int end) {
+                var target = end;  // 选取数组的最后一个元素进行上浮操作
+                while (target > begin) {
+                    if (cmp.compare(arr[target], arr[target / 2]) < 0) break;
+                    swap(arr, target, target / 2);
+                    target = target / 2;
+                }
+            }
+
+            /**
+             * 获取左子节点的索引下标
+             * @param parent 父节点下标
+             * @return 左子节点
+             */
+            int leftChild(int parent) {
+                if (parent == 0) return 1;
+                return (parent * 2) + 1;
+            }
+
+            /**
+             * 获取右子节点的索引下标
+             * @param parent 父节点下标
+             * @return 右子节点
+             */
+            int rightChild(int parent) {
+                if (parent == 0) return 2;
+                return (parent * 2) + 2;
+            }
+
+        }
+        new Heap().sort();
+    }
+
     public static void copyArray(Object[] source, Object[] target) {
         copyArray(source, target, 0, source.length);
     }

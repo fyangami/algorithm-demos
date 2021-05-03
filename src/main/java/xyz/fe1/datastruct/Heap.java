@@ -25,6 +25,9 @@ public class Heap<T extends Comparable<T>> {
     public void insert(T t) {
         heap[++size] = t;
         swim(size);
+        if (size == heap.length - 2) {
+            grow();
+        }
     }
 
     /**
@@ -36,6 +39,7 @@ public class Heap<T extends Comparable<T>> {
         if (isEmpty()) throw new NoSuchElementException("Heap is Empty!");
         Object t = heap[TOP];
         heap[TOP] = heap[size--];
+        heap[size + 1] = null;
         sink(TOP);
         return (T) t;
     }

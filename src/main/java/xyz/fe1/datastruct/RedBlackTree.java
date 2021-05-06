@@ -124,8 +124,8 @@ public class RedBlackTree<K extends Comparable<K>, V> {
 
     /**
      * 删除操作 (有问题)
-     * @param key k
      */
+    /*
     public void remove(K key) {
         if (root == null) throw new NoSuchElementException("tree is empty.");
         class Closure {
@@ -177,6 +177,7 @@ public class RedBlackTree<K extends Comparable<K>, V> {
             }
 
             Node<K, V> balance(Node<K, V> node) {
+                if (isRad(node.right)) rotateLeft(node);
                 if (isRad(node.right) && !isRad(node.left)) node = rotateLeft(node);
                 if (isRad(node.left) && isRad(node.left.left)) node = rotateRight(node);
                 if (isRad(node.left) && isRad(node.right)) flip(node);
@@ -187,6 +188,7 @@ public class RedBlackTree<K extends Comparable<K>, V> {
         new Closure().remove(root);
         if (root != null) root.red = false;
     }
+    */
 
 
     private Node<K, V> min(Node<K, V> node) {
@@ -321,7 +323,6 @@ public class RedBlackTree<K extends Comparable<K>, V> {
         for (int i = 0; i < 100; ++i) {
             rbt.put0(i, i);
         }
-        rbt.remove(99);
         rbt.forEach((k, v) -> System.out.printf("K: %s, v: %s\n", k, v));
     }
 

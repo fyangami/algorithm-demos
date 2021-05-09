@@ -93,8 +93,12 @@ package xyz.fe1.algorithms.leetcode;
 public class StringToInteger {
 
 
+    /**
+     *  有点状态机的意思
+     *  考虑不足，pow有点多余了
+     */
     public static void main(String[] args) {
-        System.out.println(atoi0(" +214748366w"));
+        System.out.println(atoi(" -2147483648"));
     }
 
     public static int atoi(String str) {
@@ -102,7 +106,7 @@ public class StringToInteger {
         var filter = new StringBuilder();
         int numericMin = '0';
         int numericMax = '9';
-        char positive = 0;
+        char positive = '+';
         boolean matchNumeric = false;
         /*
          * 先过滤出要转换的数字
@@ -113,18 +117,17 @@ public class StringToInteger {
                 if (ch == '+' || ch == '-') {
                     positive = ch;
                     matchNumeric = true;
-                } else if (ch == ' ');
-                else if (ch >= numericMin && ch <= numericMax) {
+                } else if (ch >= numericMin && ch <= numericMax) {
                     filter.append(ch);
                     matchNumeric = true;
                 }
+                else if (ch == ' ');
                 else break;
             } else {
                 if (ch >= numericMin && ch <= numericMax) filter.append(ch);
                 else break;
             }
         }
-        if (positive == 0) positive = '+';
         /*
          * 进行转换
          */
@@ -140,42 +143,47 @@ public class StringToInteger {
     }
 
     /**
-     * 递归解法 暂时有BUG
+     * 递归解法, 写的有点绕 :)
+
      * @param str source
      * @return integer number
      */
     public static int atoi0(String str) {
-        final boolean[] matchNumeric = { false };
+        final boolean[] matchNumeric = { false }; // 标志是否开始匹配数字
+        final int[] pow = { -1 };  // 次方运算
+        final char[] positive = { '+' };
         int numericMin = '0';
         int numericMax = '9';
-        final char[] positive = { 0 };
         class Closure {
             long atoi0(int idx) {
+                if (idx == str.length()) return 0;
                 var ch = str.charAt(idx);
-                long added = 0;
+                long added;
                 if (!matchNumeric[0]) {
                     if (ch == '+' || ch == '-') {
                         positive[0] = ch;
                         matchNumeric[0] = true;
-                    } else if (ch == ' ') {
                         return atoi0(idx + 1);
                     } else if (ch >= numericMin && ch <= numericMax) {
                         matchNumeric[0] = true;
                         return atoi0(idx);
-                    } else {
-                        return 0;
                     }
+                    else if (ch == ' ') return atoi0(idx + 1);
+                    else return 0;
                 } else {
-                    if (ch >= numericMin && ch <= numericMax) added = atoi0(idx + 1);
+                    if (ch >= numericMin && ch <= numericMax) {
+                        added = atoi0(idx + 1);
+                        pow[0]++;
+                    }
                     else return 0;
                     if (positive[0] == '+' && added > Integer.MAX_VALUE) return Integer.MAX_VALUE;
-                    if (positive[0] == '-' && added - 1 > Integer.MIN_VALUE) return Integer.MIN_VALUE;
-                    return (long) (Math.pow(10, idx) + added);
+                    if (positive[0] == '-' && added - 1 > Integer.MAX_VALUE) return Integer.MIN_VALUE;
+                    return (long) ((ch - numericMin) * Math.pow(10, pow[0]) + added);
                 }
-                return atoi0(idx + 1);
             }
         }
         var result = new Closure().atoi0(0);
-        return (int) (positive[0] == '+' ? result : -result);
+        if (positive[0] == '+') return result > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) result;
+        else return result - 1 > Integer.MAX_VALUE ? Integer.MIN_VALUE : (int) -result;
     }
 }

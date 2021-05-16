@@ -245,13 +245,13 @@ public abstract class Sorts {
      * @return 是否有序
      */
     protected boolean isSorted(Object[] arr, Comparator<Object> cmp) {
-        var previousDifference = 0;
+        var previousCompared = 0;
         for (var i = 0; i < arr.length - 1; ++i) {
             var compared = cmp.compare(arr[i], arr[i + 1]);
             if (compared == 0) continue;
-            if (previousDifference == 0) previousDifference = compared;
-            if (compared != previousDifference) return false;
-            previousDifference = compared;
+            if (previousCompared == 0) previousCompared = compared;
+            if (compared != previousCompared) return false;
+            previousCompared = compared;
         }
         return true;
     }

@@ -65,9 +65,8 @@ public class SortColors {
                 while(blueCursor > 0 && nums[blueCursor] == BLUE) blueCursor--;
                 if (whiteCursor < blueCursor) swap(nums, whiteCursor, blueCursor);
                 else whiteCursor++;
-            } else {
-                whiteCursor++;
             }
+            else whiteCursor++;
             if (whiteCursor > blueCursor) break;
         }
     }

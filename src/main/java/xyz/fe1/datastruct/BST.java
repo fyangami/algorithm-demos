@@ -176,12 +176,13 @@ public class BST<K extends Comparable<K>, V> {
 
     public static void main(String[] args) {
         var bst = new BST<Integer, Integer>();
-        System.out.println(bst.size());
+        bst.put(4, 1);
+        bst.put(5, 1);
+        bst.put(6, 1);
         bst.put(1, 1);
         bst.put(2, 1);
-        bst.delete(1);
-        bst.forEach(System.out::println);
-        System.out.println(bst.size());
+        bst.put(3, 1);
     }
+
 }
 
